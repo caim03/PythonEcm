@@ -21,9 +21,9 @@ class Ecm:
         smooth = Smooth.Smooth()
         primes = smooth.get_b1_prime()
         exps = smooth.get_expo()
-        lenght = len(primes)
+        length = len(primes)
 
-        for i in range(0, lenght):
+        for i in range(0, length):
             power = primes[i] ** exps[i]
             for k in range(0, power):
                 if Point.Point.comp_points(p, q):
