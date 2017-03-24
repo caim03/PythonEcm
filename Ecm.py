@@ -37,6 +37,9 @@ class Ecm:
                         if 1 < mcd < n:
                             return mcd
 
+                        if mcd == 1 or mcd == n:
+                            return -1
+
                     m = (3 * (p.get_x()**2) + curve.get_a()) * inv
                     m = m % n
 
@@ -46,10 +49,15 @@ class Ecm:
                     if inv == -1:
                         inv = q.get_x() - p.get_x()
                         inv = inv % n
+                        if inv < 0:
+                            inv = n + inv
                         mcd = gcd(inv, n)
 
                         if 1 < mcd < n:
                             return mcd
+
+                        if mcd == 1 or mcd == n:
+                            return -1
 
                     m = ((q.get_y() - p.get_y()) * inv) % n
 
