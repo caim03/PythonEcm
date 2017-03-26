@@ -44,4 +44,3 @@ class Curve:
         print "a = " + self.a.__str__()
         print "b = " + self.b.__str__()
         print "delta = " + self.delta.__str__()
-

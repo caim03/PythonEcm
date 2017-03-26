@@ -5,8 +5,12 @@ from fractions import gcd
 
 
 class Smooth:
-    def __init__(self):
-        self.b1 = 2500
+    def __init__(self, p):
+        a = math.log(p)
+        b = math.log(a)
+        sq = math.sqrt((a * b)/2)
+        self.b1 = int(math.exp(sq))
+        print self.b1
         self.b2 = self.b1 * 100
         self.b1_prime = self.smooth_prime(True)
         self.b2_prime = self.smooth_prime(False)
@@ -78,26 +82,18 @@ def is_prime(n):
 
 
 def inverse(a, b):
-    x0 = 0
-    x1 = 1
 
+    if a == 0:
+        return -1
     a = a % b
     if a < b:
         a = b + a
 
-    if gcd(a, b) != 1:
+    for d in range(1, b):
+        r = (d * a) % b
+        if r == 1:
+            break
+    else:
         return -1
+    return d
 
-    while a > 1:
-        q = a / b
-        t = b
-        b = a % b
-        a = t
-        t = x0
-        x0 = x1 - q * x0
-        x1 = t
-
-    if x1 < 0:
-        x1 = x0 + b
-
-    return x1
