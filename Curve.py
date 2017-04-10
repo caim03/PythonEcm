@@ -1,7 +1,6 @@
 """ This class defines an elliptic curve """
 
 from random import randint
-import math
 
 
 class Curve:
@@ -11,8 +10,8 @@ class Curve:
     """
     def __init__(self, n, point):
         self.a = randint(0, n - 1)
-        self.b = point.get_y()**2 - point.get_x()**3 - (self.a * point.get_x()) % n
-        self.delta = ((4 * math.pow(self.a, 3)) + (27 * math.pow(self.b, 2))) % n
+        self.b = (point.get_y()**2 - point.get_x()**3 - (self.a * point.get_x())) % n
+        self.delta = ((4 * (self.a**3)) + (27 * (self.b**2))) % n
 
     """ This method is the getter for a coefficient variable
         @:param Nothing

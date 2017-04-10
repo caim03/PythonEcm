@@ -1,6 +1,4 @@
 """ This class defines the structure of a point in an elliptic curve context """
-from fractions import gcd
-
 import Smooth
 
 
@@ -11,9 +9,10 @@ class Point:
         @:return Nothing
     """
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, inf):
         self.x = x
         self.y = y
+        self.inf = inf
 
     @staticmethod
     def comp_points(p, q):
@@ -23,44 +22,38 @@ class Point:
 
     @staticmethod
     def sum_points(p, q, curve, n):
-        if Point.comp_points(p, q):
-            inv = Smooth.inverse(2 * p.get_y(), n)
-            if inv == -1:
-                inv = 2 * p.get_y()
-                inv = inv % n
-                mcd = gcd(inv, n)
+        if p.get_inf() == 0:
+            return q
 
-                if 1 < mcd < n:
-                    return mcd
+        if q.get_inf() == 0:
+            return p
 
-                if mcd == 1 or mcd == n:
-                    return -1
+        if p.get_x() == q.get_x():
+            if (p.get_y() + q.get_y()) % n == 0:
+                res_point = Point(0, 1, 0)
+                return res_point
 
-            m = (3 * (p.get_x() ** 2) + curve.get_a()) * inv
-            m = m % n
+            inv, _, g = Smooth.inverse(2 * p.get_y(), n)
+            if g > 1:
+                res_point = Point(0, 0, 2 * p.get_y())
+                return res_point
+
+            m = ((3 * (p.get_x() ** 2) + curve.get_a()) * inv) % n
 
         else:
-            inv = Smooth.inverse(q.get_x() - p.get_x(), n)
-            if inv == -1:
-                inv = q.get_x() - p.get_x()
-                inv = inv % n
-                if inv < 0:
-                    inv = n + inv
-                mcd = gcd(inv, n)
-                if 1 < mcd < n:
-                    return mcd
-
-                if mcd == 1 or mcd == n:
-                    return -1
+            inv, _, g = Smooth.inverse(q.get_x() - p.get_x(), n)
+            if g > 1:
+                res_point = Point(0, 0, q.get_x() - p.get_x())
+                return res_point
 
             m = ((q.get_y() - p.get_y()) * inv) % n
+        x3 = (m**2 - q.get_x() - p.get_x()) % n
 
-        q.set_x((m**2 - q.get_x() - p.get_x()) % n)
-        if q.get_x() < 0:
-            q.set_x(n + q.get_x())
-        q.set_y((-m * (q.get_x() - p.get_x()) - p.get_y()) % n)
-        if q.get_y() < 0:
-            q.set_y(n + q.get_y())
+        y3 = (m * (p.get_x() - x3) - p.get_y()) % n
+
+        res_point = Point(x3, y3, 1)
+
+        return res_point
 
     """ This method is the getter for x coordinate variable
         @:param Nothing
@@ -83,6 +76,9 @@ class Point:
         @:return Nothing
     """
 
+    def get_inf(self):
+        return self.inf
+
     def set_x(self, x):
         self.x = x
 
@@ -98,6 +94,9 @@ class Point:
         @:param Nothing
         @:return Nothing
     """
+
+    def set_inf(self, inf):
+        self.inf = inf
 
     def to_string(self):
         print '(' + self.x.__str__() + ', ' + self.y.__str__() + ')'
