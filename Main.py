@@ -6,6 +6,8 @@ from Curve import Curve
 from Smooth import Smooth
 import sys
 import random
+import subprocess
+
 
 
 def main():
@@ -28,20 +30,22 @@ def main():
     print "Number to be factorized: " + n.__str__()
     print "B-smooth bound: " + smooth.get_b1().__str__()
 
-    num = 0
-    while True:
-        print "Scelgo un punto a caso"
+    iter = smooth.get_iter()
+
+    num = 1
+    while num <= iter:
+        print "Curva numero: " + num.__str__()
+
         P = Point(random.randint(0, n - 1), random.randint(0, n - 1), 1)
         Q = Point(P.get_x(), P.get_y(), 0)
-        print "Creo la curva"
+
         curve = Curve(n, P)
         num += 1
-        print "Curva numero: " + num.__str__()
 
         # Delta control
         g = gcd(curve.get_delta(), n)
         if g > 1:
-            print "A non-trivial factor was found: " + g.__str__()
+            print "A non-trivial factor (lucky) was found: " + g.__str__()
             return
 
         # Start the first phase

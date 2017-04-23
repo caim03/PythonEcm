@@ -30,27 +30,30 @@ class Point:
 
         if p.get_x() == q.get_x():
             if (p.get_y() + q.get_y()) % n == 0:
-                res_point = Point(0, 1, 0)
+                res_point = Point(0, 1, 0)  # Return Infinity Point
                 return res_point
 
-            inv, _, g = Smooth.inverse(2 * p.get_y(), n)
+            num = (3 * (p.get_x() ** 2) + curve.get_a()) % n
+            den = (2 * p.get_y()) % n
+
+            inv, _, g = Smooth.inverse(den, n)
             if g > 1:
-                res_point = Point(0, 0, 2 * p.get_y())
+                res_point = Point(0, 0, den)
                 return res_point
-
-            m = ((3 * (p.get_x() ** 2) + curve.get_a()) * inv) % n
 
         else:
-            inv, _, g = Smooth.inverse(q.get_x() - p.get_x(), n)
+            num = (q.get_y() - p.get_y()) % n
+            den = (q.get_x() - p.get_x()) % n
+
+            inv, _, g = Smooth.inverse(den, n)
             if g > 1:
-                res_point = Point(0, 0, q.get_x() - p.get_x())
+                res_point = Point(0, 0, den)
                 return res_point
 
-            m = ((q.get_y() - p.get_y()) * inv) % n
+        m = (num * inv) % n
+
         x3 = (m**2 - q.get_x() - p.get_x()) % n
-
         y3 = (m * (p.get_x() - x3) - p.get_y()) % n
-
         res_point = Point(x3, y3, 1)
 
         return res_point
@@ -99,4 +102,4 @@ class Point:
         self.inf = inf
 
     def to_string(self):
-        print '(' + self.x.__str__() + ', ' + self.y.__str__() + ')'
+        print '(' + self.x.__str__() + ', ' + self.y.__str__() + ', ' + self.inf.__str__() + ')'

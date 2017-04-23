@@ -6,12 +6,10 @@
 """
 
 from fractions import gcd
-
 from Point import Point
 
 
 class Ecm:
-    """ This method """
 
     def __init__(self):
         pass
@@ -45,31 +43,30 @@ class Ecm:
         primes = smooth.get_b2_prime()
         lim = smooth.get_increment()
         point_r = []
-        k = 0
-        for i in range(2, lim, 2):
-            if i == 2:
+
+        for i in range(0, lim - 1):
+            if i == 0:
                 res = Point.sum_points(q, q, curve, n)
                 if res.get_inf() > 1:
                     return gcd(res.get_inf(), n)
                 point_r.append(res)
             else:
-                res = Point.sum_points(point_r[0], point_r[k-1], curve, n)
+                res = Point.sum_points(q, point_r[i-1], curve, n)
                 if res.get_inf() > 1:
                     return gcd(res.get_inf(), n)
                 point_r.append(res)
 
-            k = k + 1
-
         length = len(point_r)
 
-        res = Point(q.get_x(), q.get_y(), 1)
-        for k in range(0, primes[0]):
+        res = Point(q.get_x(), q.get_y(), q.get_inf())
+        for i in range(0, primes[0]):
             res = Point.sum_points(q, res, curve, n)
             if res.get_inf() > 1:
                 return gcd(res.get_inf(), n)
 
-        for i in range(1, length):
-                res = Point.sum_points(point_r[i - 1], res, curve, n)
-                if res.get_inf() > 1:
-                    return gcd(res.get_inf(), n)
+        for i in range(0, length):
+            res = Point.sum_points(res, point_r[i], curve, n)
+            if res.get_inf() > 1:
+                return gcd(res.get_inf(), n)
+
         return -1

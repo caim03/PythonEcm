@@ -14,6 +14,7 @@ class Smooth:
         for i in range(0, len(self.table)):
             if digits == self.table[i][0]:
                 self.b1 = self.table[i][1]
+                self.iter = self.table[i][2]
                 break
         self.b2 = self.b1 * 100
         self.b1_prime = self.smooth_prime(True)
@@ -86,6 +87,9 @@ class Smooth:
     def get_increment(self):
         return self.max
 
+    def get_iter(self):
+        return self.iter
+
     def set_b1(self, b1):
         self.b1 = b1
 
@@ -117,3 +121,5 @@ def inverse(a, b):
     q, r = divmod(a, b)
     x, y, g = inverse(b, r)
     return y, x - q * y, g
+
+
